@@ -1,0 +1,69 @@
+# Exercise 03: Chat room
+
+For this exercise you will be creating a small chat room. It will consist of
+three parts: the chat (all messages with usernames and timestamps), list of
+online users and the input field for typing messages.
+
+## Servers
+
+You will need to create two servers: one HTTP server and one for WebSockets.
+
+The HTTP server will only be serving static files (HTML/CSS/JS). The WebSocket
+server will handle all other communication.
+
+## Chat room
+
+The application will be a small chat room, which as previously describe will
+contain three parts (se above). You decide how you want to display these (i.e.
+the HTML and CSS). Perhaps a list of online users to the right (like Discord)
+and a chat box in the bottom and the chat messages above.
+
+### Functionality
+
+- A user should be able to connect to your chat room, which will be done by
+  simply entering the address to your HTTP server (e.g. http://localhost:3000).
+- When a user connects they should be given a random username. This should be
+  something readable such as "Guest#1234", NOT "iaGdf840D". This should then be
+  sent to all others (so the list of online users is updated).
+- When a user connects they should also see the previous chat history. So
+  whenever a user connects they should be sent the complete chat history.
+- A user should be able to enter a message in the input field and either hit
+  <Enter> or press a button (e.g. "Send") to send the message to your WebSocket
+  server. This message should then be sent to all others.
+- When a user disconnects (i.e. closes the browser window) their username should
+  be removed from the list of online users. This has to be sent to all others.
+- All chat messages should have a timestamp attatched to them, so we can have a
+  message in the following format "14:33 [Guest#1234]: Hi all!".
+
+## Tips
+
+On the server I'd recommend having one array for the list of users and one for
+the chat history.
+
+A user could be stored as: User{ username: 'Sebastian' }.
+A chat message could be stored as: Message{ timestamp: ..., message: 'Hi!' }
+
+Remember:
+    - The websocket server has the event 'connection' for when a new connection
+      is made. Remember, when a connection is made, you need to generate a
+      username and store it in the array of users and also send it back to the
+      connected user - and - broadcast the new name to all others.
+    - Each connection (websocket, not the server) has the event 'close' for when
+      a connection is lost. When the connection is lost, remove the user from
+      the list of users, and broadcast this change to all connected users
+
+Sending messages/data between the server and the client should be done in a
+predefined way of your choosing. E.g. { action: ..., payload: ...}. So it's easy
+to handle these messages on the server and the client.
+
+A starting point for the communication between the client and server could be by
+defining all types of messages that could be sent. Such as "a user connects",
+"here is the chat history" or "a user disconnected". So you know, before you
+start programming, what you need to implement.
+
+## Git and GitHub
+
+All of your code should be hosted within a GitHub repository. You either do this
+from the start and work via Git - OR - you wait until you've done most of the
+code, create the repository add the code, if you decide to wait, you'll have to
+make at least one additional commit (each) so I can see you've tried using Git.

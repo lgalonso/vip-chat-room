@@ -1,0 +1,23 @@
+{
+  "name": "vip-chat-room",
+  "version": "1.0.0",
+  "description": "Repository for websockets exercise for the VIP course, (MAU) where we will develop a small chat room using websockets.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lgalonso/vip-chat-room.git"
+  },
+  "author": "lgalonso",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lgalonso/vip-chat-room/issues"
+  },
+  "homepage": "https://github.com/lgalonso/vip-chat-room#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "ws": "^7.4.3"
+  }
+}
