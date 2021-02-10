@@ -1,0 +1,143 @@
+* {
+    margin: 0;
+}
+
+body {
+    background-color: rgb(31, 30, 34);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    font-family: "Source Sans Pro";
+}
+
+#wrapper {
+    width: 70vw;
+    height: 85vh;
+    background-color: rgb(51, 49, 57);
+    border-radius: 30px;
+    box-shadow: 0 0px 30px rgb(0, 0, 0);
+    display: flex;
+    padding: 20px;
+}
+
+.outerBox {
+    border-radius: 30px;
+    margin: 10px;
+    background-color: rgb(222, 226, 228);
+    box-shadow: 0 0px 20px rgb(24, 23, 23);
+}
+
+
+
+/*CHAT CONTAINER*/
+#chatWrapper {
+    flex-basis: calc(70% - 20px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 15px 5px;
+}
+
+#feedbackBox {
+    flex-basis: 20px;
+    font-size: 14px;
+    animation: feedbackText 5s forwards;
+}
+
+/*@keyframes feedbackText {
+    0% { opacity: 0;}
+    50% { opacity: 1;}
+    100% { opacity: 0;}
+}*/
+
+
+#chatBox {
+    flex-grow: 1;
+    width: calc(100% - 40px);
+    margin-top: 15px;
+}
+
+#chatContainer {
+    background-color: white;
+    border-radius: 20px;
+    box-shadow: 5px 5px 15px rgba(190, 187, 196, 0.66);
+    max-width: 50%;
+    height: auto;
+    padding: 10px 20px;
+}
+
+#timeStamp {
+    margin-bottom: 3px;
+    font-size: 13px;
+}
+
+#messageWrapper {
+    flex-basis: auto;
+    display: flex;
+    width: calc(100% - 40px);
+    margin-top: 10px;
+    align-items: center;
+    justify-content: center;
+}
+
+#messageBox {
+    border: none;
+    flex-grow: 1;
+    padding: 15px 18px;
+    background-color: white;
+    border-radius: 30px;
+    box-shadow: 5px 5px 5px rgb(190, 187, 196);
+    margin-right: 10px;
+}
+
+#sendMessage {
+    height: 80%;
+    flex-basis: 40px;
+    background-color: rgb(41, 6, 41);
+    color: rgba(255, 255, 255, 0.904);
+    border: none;
+    box-shadow: 5px 5px 5px rgb(190, 187, 196);
+    border-radius: 10px;
+    transition: all .1s linear;
+}
+
+#sendMessage:hover {
+    cursor: pointer;
+    background-color: rgb(51, 9, 51);
+}
+
+
+/*USERS TO THE RIGHT*/
+
+#usersWrapper {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    background-color: rgb(31, 30, 34);
+}
+
+#title {
+    text-align: center;
+    margin: 15px;
+    color: white;
+    font-weight: 700;
+    font-size: 18px;
+}
+
+#users {
+    margin: 0 15px 40px;
+    flex-grow: 1;
+    overflow-y: scroll;
+}
+
+.user {
+    padding: 10px 15px;
+    border-radius: 5px;
+    color: rgba(255, 255, 255, 0.898);
+    font-weight: 600;
+    font-size: 15px;
+}
+
+
+

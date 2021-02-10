@@ -25,10 +25,10 @@ function generateUsername(){
             let number = username.split('#')[1];
             
             if (number > highestID) {
-                highestID = number
+                highestID = Number(number);
             }
         })
-
+        
         newUser = `Guest#${highestID + 1}`;
 
     } else {
