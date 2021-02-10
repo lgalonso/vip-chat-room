@@ -15,8 +15,39 @@ const WebSocket = require('ws');
 const server = new WebSocket.Server({ port: 4000 });
 
 // Generates a random user name on user connection
+let highestID = 0;
 function generateUsername(){
-  return "Guest";
+    let newUser
+
+    if (!users.length == 0) {
+        users.forEach(user => {
+            let username = user.username;
+            let number = username.split('#')[1];
+            
+            if (number > highestID) {
+                highestID = number
+            }
+        })
+
+        newUser = `Guest#${highestID + 1}`;
+
+    } else {
+        newUser = `Guest#${highestID}`;
+    }
+    
+    highestID + 1;
+    users.push({username: newUser});
+    return newUser;
+}
+
+
+
+function broadcast(server, message){
+    server.clients.forEach((client) => {
+        if (client.readyState == WebSocket.OPEN) {
+            client.send(message);
+        }
+    })
 }
 
 let users = [];
@@ -25,8 +56,8 @@ let chatHistory = [];
 server.on('connection', (websocket) => {
   console.log('Someone connected');
   const new_user = generateUsername()
-  console.log(new_user)
-  websocket.send(new_user)
+  broadcast(server, new_user);
+    console.log(users);
 
   // Listen to the `message` event
   websocket.on('message', (message) => {
