@@ -16,7 +16,7 @@ const server = new WebSocket.Server({ port: 4000 });
 
 // Generates a random user name on user connection
 function generateUsername(){
-
+  return "Guest";
 }
 
 let users = [];
@@ -24,6 +24,9 @@ let chatHistory = [];
 
 server.on('connection', (websocket) => {
   console.log('Someone connected');
+  const new_user = generateUsername()
+  console.log(new_user)
+  websocket.send(new_user)
 
   // Listen to the `message` event
   websocket.on('message', (message) => {
