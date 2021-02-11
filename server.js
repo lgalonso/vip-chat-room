@@ -45,9 +45,13 @@ function generateUsername(){
 function broadcast(server, message){
     server.clients.forEach((client) => {
         if (client.readyState == WebSocket.OPEN) {
-            client.send(message);
+            client.send(JSON.stringify(message));
         }
     })
+}
+
+function sendPrivate(websocket, message){
+  websocket.send(JSON.stringify(message));
 }
 
 let users = [];
@@ -56,8 +60,8 @@ let chatHistory = [];
 server.on('connection', (websocket) => {
   console.log('Someone connected');
   const new_user = generateUsername()
-  broadcast(server, new_user);
-    console.log(users);
+  broadcast(server, {action:"user:connection", payload: new_user});
+  broadcast(server, {action:"user:list", payload: users})
 
   // Listen to the `message` event
   websocket.on('message', (message) => {
