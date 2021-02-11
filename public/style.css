@@ -62,7 +62,8 @@ body {
     background-color: white;
     border-radius: 20px;
     box-shadow: 5px 5px 15px rgba(190, 187, 196, 0.66);
-    max-width: 50%;
+    display: inline-block;
+    min-width: 20%;
     height: auto;
     padding: 10px 20px;
 }
