@@ -19,6 +19,10 @@ let highestID = 0;
 function generateUsername() {
     let newUser;
 
+    // Random 4 digit number
+    // var val = Math.floor(1000 + Math.random() * 9000);
+    // console.log(val);
+
     if (!users.length == 0) {
         users.forEach((user) => {
             let username = user.username;
