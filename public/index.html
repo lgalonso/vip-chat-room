@@ -32,7 +32,9 @@
   </body>
 
   <script>
-        const socket = new WebSocket('ws://localhost:4000');
+    let username
+
+    const socket = new WebSocket('ws://localhost:4000');
 
     socket.addEventListener('open', (event) => {
       console.log('Connected to the websocket server');
@@ -40,11 +42,16 @@
     });
 
     socket.addEventListener('message', (event) => {
+
       // Parse the received data and then log it
         // const data = JSON.parse(event.data);
         console.log(event);
       const data = JSON.parse(event.data)
       console.log(data);
+
+      if (data.action === "user:name"){
+        username = data.payload;
+      }
 
       //feedback when someone connects
       if(data.action === "user:connection"){
@@ -55,10 +62,17 @@
 
       if(data.action === "user:list"){
         console.log(data.payload)
+        document.getElementById("users").innerHTML = "";
         data.payload.forEach((user)=>{
           //Append user to online users list
           appendUser(user.username);
         })
+      }
+
+      if(data.action === "user:disconnection"){
+        const feedback = `${data.payload} has left`;
+        let feedbackBox = document.getElementById("feedbackBox");
+        feedbackBox.innerHTML = feedback;
       }
     });
 
@@ -68,5 +82,11 @@
       userDiv.classList.add('user');
       document.getElementById("users").append(userDiv);
     }
+
+
+    window.addEventListener('beforeunload', () => {
+      //socket.send("guest disconnected");
+      socket.close(1000, username);
+    })
   </script>
 </html>

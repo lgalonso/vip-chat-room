@@ -60,17 +60,23 @@ let chatHistory = [];
 server.on('connection', (websocket) => {
   console.log('Someone connected');
   const new_user = generateUsername()
+  sendPrivate(websocket, {action: "user:name", payload: new_user});
   broadcast(server, {action:"user:connection", payload: new_user});
   broadcast(server, {action:"user:list", payload: users})
 
   // Listen to the `message` event
   websocket.on('message', (message) => {
     console.log('Someone messaged');
+    console.log(message);
   });
 
   // Listen to the `close` event
-  websocket.on('close', () => {
+  websocket.on('close', (code, reason) => {
     console.log('Someone disconnected');
+    console.log(code, reason);
+    users = users.filter( user => user.username !== reason);
+    broadcast(server, {action:"user:list", payload: users});
+    broadcast(server, {action:"user:disconnection", payload: reason});
   });
 });
 
