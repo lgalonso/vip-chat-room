@@ -42,7 +42,7 @@ body {
 #feedbackBox {
     flex-basis: 20px;
     font-size: 14px;
-    animation: feedbackText 5s forwards;
+    /*animation: feedbackText 5s forwards;*/
 }
 
 /*@keyframes feedbackText {
@@ -56,19 +56,31 @@ body {
     flex-grow: 1;
     width: calc(100% - 40px);
     margin-top: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    overflow-y: scroll;
 }
 
-#chatContainer {
+.chatContainer {
     background-color: white;
     border-radius: 20px;
     box-shadow: 5px 5px 15px rgba(190, 187, 196, 0.66);
-    display: inline-block;
+    /*display: inline-block;*/
     min-width: 20%;
     height: auto;
     padding: 10px 20px;
+    margin: 0 0 20px;
 }
 
-#timeStamp {
+#chatSender {
+    color: rgba(255, 255, 255, 0.925);
+    background-color: rgb(41, 6, 41);
+    align-self: flex-end;
+    margin-right: 15px;
+}
+
+#timestamp {
     margin-bottom: 3px;
     font-size: 13px;
 }
@@ -105,7 +117,7 @@ body {
 
 #sendMessage:hover {
     cursor: pointer;
-    background-color: rgb(51, 9, 51);
+    background-color: rgb(62, 44, 62);
 }
 
 
