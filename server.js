@@ -77,6 +77,13 @@ server.on('connection', (websocket) => {
     websocket.on('message', (message) => {
         console.log('Someone messaged');
         const parsedMessage = JSON.parse(message);
+        const aux_date = new Date
+        const parsed_date = {
+            date: String(aux_date.toISOString()).split("T")[0],
+            time: String(aux_date).split(" ")[4].substring(0, 5)
+        }
+        parsedMessage.payload.timestamp = parsed_date
+        
         logMessage(parsedMessage);
         broadcast(server, {action: parsedMessage.action, payload: parsedMessage.payload});
     });
