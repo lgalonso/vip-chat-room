@@ -20,25 +20,28 @@ function generateUsername() {
     let newUser;
 
     // Random 4 digit number
-    // var val = Math.floor(1000 + Math.random() * 9000);
-    // console.log(val);
+    var rand_id = Math.floor(1000 + Math.random() * 9000);
+    // console.log(rand_id);
 
-    if (!users.length == 0) {
-        users.forEach((user) => {
-            let username = user.username;
-            let number = username.split('#')[1];
+    // if (!users.length == 0) {
+    //     users.forEach((user) => {
+    //         let username = user.username;
+    //         let number = username.split('#')[1];
 
-            if (number > highestID) {
-                highestID = Number(number);
-            }
-        });
+    //         if (number > highestID) {
+    //             highestID = Number(number);
+    //         }
+    //     });
 
-        newUser = `Guest#${highestID + 1}`;
-    } else {
-        newUser = `Guest#${highestID}`;
-    }
+    //     newUser = `Guest#${rand_id + 1}`;
+    // } else {
+    //     newUser = `Guest#${rand_id}`;
+    // }
 
-    highestID + 1;
+    // highestID + 1;
+
+    newUser = `Guest#${rand_id}`
+
     users.push({ username: newUser });
     return newUser;
 }
