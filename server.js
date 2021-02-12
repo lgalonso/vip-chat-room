@@ -55,6 +55,10 @@ function sendPrivate(websocket, message) {
     websocket.send(JSON.stringify(message));
 }
 
+function logMessage(message){
+    chatHistory.push(message.payload);
+}
+
 let users = [];
 let chatHistory = [];
 
@@ -64,11 +68,14 @@ server.on('connection', (websocket) => {
     sendPrivate(websocket, { action: 'user:name', payload: new_user });
     broadcast(server, { action: 'user:connection', payload: new_user });
     broadcast(server, { action: 'user:list', payload: users });
+    sendPrivate(websocket, {action: 'chat:history', payload: chatHistory});
 
     // Listen to the `message` event
     websocket.on('message', (message) => {
         console.log('Someone messaged');
-        console.log(message);
+        const parsedMessage = JSON.parse(message);
+        logMessage(parsedMessage);
+        broadcast(server, {action: parsedMessage.action, payload: parsedMessage.payload});
     });
 
     // Listen to the `close` event

@@ -18,9 +18,9 @@
                 <div id="chatBox" class="innerBox">
                     <div id="chatContainer">
                         <div id="timeStamp">
-                            01:34 <span id="username">Guest#13</span>
+                            <span id="username"></span>
                         </div>
-                        <div id="chatMessage">Hello world</div>
+                        <div id="chatMessage"></div>
                     </div>
                 </div>
                 <div id="messageWrapper">
@@ -83,6 +83,16 @@
                     feedbackBox.innerHTML = feedback;
                     break;
                 }
+                case 'user:message': {
+                    //TO DO: html, different style depending if its you who sent it
+                    console.log(data.payload);
+                    break;
+                }
+                case 'chat:history': {
+                    //TO DO: html
+                    console.log(data.payload);
+                    break;
+                }
                 default:
                     console.log('Undefined action');
             }
@@ -95,9 +105,23 @@
             document.getElementById('users').append(userDiv);
         }
 
+        function sendMessage(){
+            //TO DO: timestamp
+            let input = document.getElementById('messageBox');
+            let message = input.value;
+
+            let userMessage = {action: 'user:message', payload: {timestamp: '09.00', message: message, user: username}};
+            
+            socket.send(JSON.stringify(userMessage));
+        }
+
         window.addEventListener('beforeunload', () => {
             let message = { action: 'user:disconnection', payload: username };
             socket.close(1000, JSON.stringify(message));
         });
+
+        document.getElementById('sendMessage').addEventListener('click', sendMessage);
+        //TO DO: enter event on input
+
     </script>
 </html>
