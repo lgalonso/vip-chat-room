@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="style.css" />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,200;0,300;0,400;0,600;0,700;1,200;1,300;1,400;1,600&display=swap"
+            rel="stylesheet"
+        />
+        <title>VIP Chat Room</title>
+    </head>
+    <body>
+        <div id="wrapper">
+            <div id="chatWrapper" class="outerBox">
+                <div id="feedbackBox"></div>
+                <div id="chatBox" class="innerBox"></div>
+                <div id="messageWrapper">
+                    <input
+                        type="text"
+                        id="messageBox"
+                        class="innerBox"
+                        placeholder="Type a message..."
+                    />
+                    <button id="sendMessage">OK</button>
+                </div>
+            </div>
+            <div id="usersWrapper" class="outerBox">
+                <div id="title">Users Online</div>
+                <div id="users"></div>
+            </div>
+        </div>
+    </body>
+
+    <script>
+        class chatBase {
+            constructor(data){
+                //Data
+                let {timestamp, message, user} = data;
+                this.timestamp = timestamp;
+                this.message = message;
+                this.user = user;
+
+                //HTML
+                this.html = document.createElement("div");
+                this.html.classList.add('chatContainer');
+                
+                let time = document.createElement("div");
+                time.setAttribute('id', 'timestamp');
+                time.innerHTML = timestamp.time + " ";
+                let name = document.createElement("span");
+                name.setAttribute('id', 'username');
+                name.innerHTML = `${user}:`;
+                time.append(name);    
+
+                let chat = document.createElement("div");
+                chat.setAttribute('id', 'chatMessage');
+                chat.innerHTML = `${message}`;
+            
+                this.html.append(time, chat);
+            }
+        }
+
+        class chatSender extends chatBase {
+            constructor(data){
+                super(data);
+                this.html.setAttribute('id', 'chatSender');
+            }
+        }
+
+        let username;
+        let input = document.getElementById('messageBox');
+        let sendBtn = document.getElementById("sendMessage");
+
+        const socket = new WebSocket('ws://localhost:4000');
+
+        socket.addEventListener('open', (event) => {
+            console.log('Connected to the websocket server');
+        });
+
+        socket.addEventListener('message', (event) => {
+            // Parse the received data and then log it
+            const data = JSON.parse(event.data);
+            console.log(data);
+
+            switch (data.action) {
+                case 'user:name': {
+                    username = data.payload;
+                    break;
+                }
+                case 'user:connection': {
+                    const feedback = `${data.payload} joined`;
+                    let feedbackBox = document.getElementById('feedbackBox');
+                    feedbackBox.innerHTML = feedback;
+                    break;
+                }
+                case 'user:list': {
+                    document.getElementById('users').innerHTML = '';
+                    data.payload.forEach((user) => {
+                        //Append user to online users list
+                        appendUser(user.username);
+                    });
+                    break;
+                }
+                case 'user:disconnection': {
+                    const feedback = `${data.payload} left`;
+                    let feedbackBox = document.getElementById('feedbackBox');
+                    feedbackBox.innerHTML = feedback;
+                    break;
+                }
+                case 'user:message': {
+                    if (data.payload.user == username){
+                        appendChat(data.payload, true);
+                    } else {
+                        appendChat(data.payload);
+                    }
+                    break;
+                }
+                case 'chat:history': {
+                    data.payload.forEach( message => {
+                        appendChat(message);
+                    })
+                    break;
+                }
+                default:
+                    console.log('Undefined action');
+            }
+        });
+
+        function appendChat(chat, sender = false) {
+            let chatHTML
+            if (sender){
+                chatHTML = new chatSender(chat);
+            } else {
+                chatHTML = new chatBase(chat);
+            }
+            document.getElementById("chatBox").append(chatHTML.html);
+        }
+
+        function appendUser(message) {
+            let userDiv = document.createElement('div');
+            userDiv.innerHTML = message;
+            userDiv.classList.add('user');
+            document.getElementById('users').append(userDiv);
+        }
+
+        function sendMessage(){
+            let message = input.value;
+
+            let userMessage = {action: 'user:message', payload: {timestamp: '09.00', message: message, user: username}};
+            
+            socket.send(JSON.stringify(userMessage));
+            input.value = "";
+        }
+
+        window.addEventListener('beforeunload', () => {
+            let message = { action: 'user:disconnection', payload: username };
+            socket.close(1000, JSON.stringify(message));
+        });
+
+
+        input.addEventListener("keyup", function(e) {
+            if (e.keyCode === 13) {
+            sendBtn.click();
+        }
+        });
+
+        sendBtn.addEventListener('click', sendMessage);
+
+    </script>
+</html>
