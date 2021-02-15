@@ -15,14 +15,7 @@
         <div id="wrapper">
             <div id="chatWrapper" class="outerBox">
                 <div id="feedbackBox"></div>
-                <div id="chatBox" class="innerBox">
-                    <div id="chatContainer">
-                        <div id="timeStamp">
-                            <span id="username"></span>
-                        </div>
-                        <div id="chatMessage"></div>
-                    </div>
-                </div>
+                <div id="chatBox" class="innerBox"></div>
                 <div id="messageWrapper">
                     <input
                         type="text"
@@ -41,7 +34,46 @@
     </body>
 
     <script>
+        class chatBase {
+            constructor(data){
+                //Data
+                let {timestamp, message, user} = data;
+                this.timestamp = timestamp;
+                this.message = message;
+                this.user = user;
+
+                //HTML
+                this.html = document.createElement("div");
+                this.html.classList.add('chatContainer');
+                //this.html.setAttribute('id', 'chatContainer');
+                
+                let time = document.createElement("div");
+                time.setAttribute('id', 'timestamp');
+                time.innerHTML = timestamp + " ";
+                let name = document.createElement("span");
+                name.setAttribute('id', 'username');
+                name.innerHTML = `${user}:`;
+                time.append(name);    
+
+                let chat = document.createElement("div");
+                chat.setAttribute('id', 'chatMessage');
+                chat.innerHTML = `${message}`;
+            
+                this.html.append(time, chat);
+            }
+        }
+
+        class chatSender extends chatBase {
+            constructor(data){
+                super(data);
+                //let chatContainer = this.html.querySelector(".chatContainer");
+                this.html.setAttribute('id', 'chatSender');
+            }
+        }
+
         let username;
+        let input = document.getElementById('messageBox');
+        let sendBtn = document.getElementById("sendMessage");
 
         const socket = new WebSocket('ws://localhost:4000');
 
@@ -63,13 +95,12 @@
                     break;
                 }
                 case 'user:connection': {
-                    const feedback = `${data.payload} has joined`;
+                    const feedback = `${data.payload} joined`;
                     let feedbackBox = document.getElementById('feedbackBox');
                     feedbackBox.innerHTML = feedback;
                     break;
                 }
                 case 'user:list': {
-                    console.log(data.payload);
                     document.getElementById('users').innerHTML = '';
                     data.payload.forEach((user) => {
                         //Append user to online users list
@@ -78,25 +109,40 @@
                     break;
                 }
                 case 'user:disconnection': {
-                    const feedback = `${data.payload} has left`;
+                    const feedback = `${data.payload} left`;
                     let feedbackBox = document.getElementById('feedbackBox');
                     feedbackBox.innerHTML = feedback;
                     break;
                 }
                 case 'user:message': {
                     //TO DO: html, different style depending if its you who sent it
-                    console.log(data.payload);
+                    if (data.payload.user == username){
+                        appendChat(data.payload, true);
+                    } else {
+                        appendChat(data.payload);
+                    }
                     break;
                 }
                 case 'chat:history': {
-                    //TO DO: html
-                    console.log(data.payload);
+                    data.payload.forEach( message => {
+                        appendChat(message);
+                    })
                     break;
                 }
                 default:
                     console.log('Undefined action');
             }
         });
+
+        function appendChat(chat, sender = false) {
+            let chatHTML
+            if (sender){
+                chatHTML = new chatSender(chat);
+            } else {
+                chatHTML = new chatBase(chat);
+            }
+            document.getElementById("chatBox").append(chatHTML.html);
+        }
 
         function appendUser(message) {
             let userDiv = document.createElement('div');
@@ -107,12 +153,12 @@
 
         function sendMessage(){
             //TO DO: timestamp
-            let input = document.getElementById('messageBox');
             let message = input.value;
 
             let userMessage = {action: 'user:message', payload: {timestamp: '09.00', message: message, user: username}};
             
             socket.send(JSON.stringify(userMessage));
+            input.value = "";
         }
 
         window.addEventListener('beforeunload', () => {
@@ -120,8 +166,15 @@
             socket.close(1000, JSON.stringify(message));
         });
 
-        document.getElementById('sendMessage').addEventListener('click', sendMessage);
-        //TO DO: enter event on input
+
+        input.addEventListener("keyup", function(e) {
+            if (e.keyCode === 13) {
+            sendBtn.click();
+        }
+        });
+
+        sendBtn.addEventListener('click', sendMessage);
+        //TO DO: remove input value from input
 
     </script>
 </html>
