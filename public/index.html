@@ -45,11 +45,10 @@
                 //HTML
                 this.html = document.createElement("div");
                 this.html.classList.add('chatContainer');
-                //this.html.setAttribute('id', 'chatContainer');
                 
                 let time = document.createElement("div");
                 time.setAttribute('id', 'timestamp');
-                time.innerHTML = timestamp + " ";
+                time.innerHTML = timestamp.time + " ";
                 let name = document.createElement("span");
                 name.setAttribute('id', 'username');
                 name.innerHTML = `${user}:`;
@@ -66,7 +65,6 @@
         class chatSender extends chatBase {
             constructor(data){
                 super(data);
-                //let chatContainer = this.html.querySelector(".chatContainer");
                 this.html.setAttribute('id', 'chatSender');
             }
         }
@@ -79,13 +77,10 @@
 
         socket.addEventListener('open', (event) => {
             console.log('Connected to the websocket server');
-            //We should appen all online users from the users-array to the right column on connection
         });
 
         socket.addEventListener('message', (event) => {
             // Parse the received data and then log it
-            // const data = JSON.parse(event.data);
-            // console.log(event);
             const data = JSON.parse(event.data);
             console.log(data);
 
@@ -115,7 +110,6 @@
                     break;
                 }
                 case 'user:message': {
-                    //TO DO: html, different style depending if its you who sent it
                     if (data.payload.user == username){
                         appendChat(data.payload, true);
                     } else {
@@ -152,7 +146,6 @@
         }
 
         function sendMessage(){
-            //TO DO: timestamp
             let message = input.value;
 
             let userMessage = {action: 'user:message', payload: {timestamp: '09.00', message: message, user: username}};
@@ -174,7 +167,6 @@
         });
 
         sendBtn.addEventListener('click', sendMessage);
-        //TO DO: remove input value from input
 
     </script>
 </html>

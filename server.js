@@ -15,30 +15,11 @@ const WebSocket = require('ws');
 const server = new WebSocket.Server({ port: 4000 });
 
 // Generates a random user name on user connection
-let highestID = 0;
 function generateUsername() {
     let newUser;
 
     // Random 4 digit number
     var rand_id = Math.floor(1000 + Math.random() * 9000);
-    // console.log(rand_id);
-
-    // if (!users.length == 0) {
-    //     users.forEach((user) => {
-    //         let username = user.username;
-    //         let number = username.split('#')[1];
-
-    //         if (number > highestID) {
-    //             highestID = Number(number);
-    //         }
-    //     });
-
-    //     newUser = `Guest#${rand_id + 1}`;
-    // } else {
-    //     newUser = `Guest#${rand_id}`;
-    // }
-
-    // highestID + 1;
 
     newUser = `Guest#${rand_id}`
 
